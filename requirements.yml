@@ -1,0 +1,13 @@
+---
+collections:
+  - community.general
+  - azure.azcollection
+  - ansible.windows
+  - community.windows
+  - community.docker
+
+roles:
+  - gsoft.azure_devops_agent
+  - ahuffman.resolv
+  - geerlingguy.docker
+  - geerlingguy.ntp

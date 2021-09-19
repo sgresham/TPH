@@ -1,0 +1,1 @@
+docker run -it --rm --volume ${pwd}:/data terriblepowerhelm:latest sh -c "chmod 0600 /data && cd /data && /bin/zsh"
