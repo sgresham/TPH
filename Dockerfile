@@ -15,12 +15,12 @@ RUN yum install powershell -y
 RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc
 RUN echo -e "[azure-cli] \nname=Azure CLI \nbaseurl=https://packages.microsoft.com/yumrepos/azure-cli \nenabled=1 \ngpgcheck=1 \ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | tee /etc/yum.repos.d/azure-cli.repo
 RUN yum install azure-cli -y
-
 RUN pip3 install pywinrm
 RUN pip3 install pywinrm[credssp]
 COPY requirements.yml .
 RUN ansible-galaxy collection install -r requirements.yml
 RUN ansible-galaxy role install -r requirements.yml
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 RUN curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 RUN echo -e "[google-cloud-sdk] \nname=Google Cloud SDK \nbaseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el7-x86_64 \nenabled=1 \ngpgcheck=1 \nrepo_gpgcheck=0 \ngpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg \n\thttps://packages.cloud.google.com/yum/doc/rpm-package-key.gpg" | tee -a /etc/yum.repos.d/google-cloud-sdk.repo
 RUN yum install google-cloud-sdk -y
