@@ -1,15 +1,18 @@
 FROM centos:centos8
 
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-* &&\
+    sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
+RUN yum upgrade -y
 RUN yum install epel-release  -y
 RUN yum install ansible -y
 RUN yum install git zsh iputils nano curl unzip -y
 RUN yum install gcc python3-devel openssl-devel -y
-RUN curl -l https://releases.hashicorp.com/terraform/1.0.4/terraform_1.0.4_linux_amd64.zip --output /tmp/terraform_1.0.4_linux_amd64.zip && \
+RUN curl -l https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_linux_amd64.zip --output /tmp/terraform_1.1.5_linux_amd64.zip && \
         cd /tmp && \
-        unzip terraform_1.0.4_linux_amd64.zip && \
+        unzip terraform_1.1.5_linux_amd64.zip && \
         mv terraform /usr/local/sbin/terraform && \
         chmod +x /usr/local/sbin/terraform && \
-        rm /tmp/terraform_1.0.4_linux_amd64.zip 
+        rm /tmp/terraform_1.1.5_linux_amd64.zip 
 RUN curl https://packages.microsoft.com/config/rhel/7/prod.repo | tee /etc/yum.repos.d/microsoft.repo
 RUN yum install powershell -y
 RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc
