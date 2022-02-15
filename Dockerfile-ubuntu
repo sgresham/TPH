@@ -3,7 +3,7 @@ FROM ubuntu:focal
 RUN apt-get update -y
 RUN apt-get install ansible -y
 RUN apt-get install git zsh iputils-ping nano curl unzip -y
-RUN apt-get install gcc python3-devel openssl-devel -y
+RUN apt-get install gcc python3-dev openssl-dev -y
 RUN curl -l https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_linux_amd64.zip --output /tmp/terraform_1.1.5_linux_amd64.zip && \
         cd /tmp && \
         unzip terraform_1.1.5_linux_amd64.zip && \
