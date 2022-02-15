@@ -5,7 +5,7 @@ docker build -t terriblepowerhelm:1.0.0 -t terriblepowerhelm:latest .
 docker container run -v \${pwd}:/data -it terriblepowerhelm:1.0.0 zsh
 
 ## Currently installed: - 
-1. Terraform 1.0.4
+1. Terraform 1.1.5
 2. Ansible
 3. Powershell PWSH
 4. Helm 3
