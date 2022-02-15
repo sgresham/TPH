@@ -10,7 +10,7 @@ RUN curl -l https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_linux
         mv terraform /usr/local/sbin/terraform && \
         chmod +x /usr/local/sbin/terraform && \
         rm /tmp/terraform_1.1.5_linux_amd64.zip 
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 RUN pip3 install pywinrm
 RUN pip3 install pywinrm[credssp]
 COPY requirements.yml .
