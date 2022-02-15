@@ -4,6 +4,12 @@ make sure docker is running. I have to run mine as local admin.
 docker build -t terriblepowerhelm:1.0.0 -t terriblepowerhelm:latest .
 docker container run -v \${pwd}:/data -it terriblepowerhelm:1.0.0 zsh
 
+I like to create an alias for this for quick use
+
+alias tph='docker run -it --rm -v $PWD:/data -v ~/.kube/config:/root/.kube/config tph zsh'
+
+throw it somewhere useful like .bashrc
+
 ## Currently installed: - 
 1. Terraform 1.1.5
 2. Ansible
@@ -11,6 +17,9 @@ docker container run -v \${pwd}:/data -it terriblepowerhelm:1.0.0 zsh
 4. Helm 3
 5. Azure CLI
 6. Google Cloud SDK
+7. ZSH Oh-my-zsh
+8. kube-ps1 (zsh prompt for showing instance)
+9. linode-cli
 
 ## To manage Ansible collections
 1. requirements.yml before build to deploy roles and collections.
