@@ -6,7 +6,7 @@ RUN yum upgrade -y
 RUN yum install epel-release  -y
 RUN yum install ansible -y
 RUN yum install git zsh iputils nano curl unzip -y
-RUN yum install gcc python3-devel openssl -y
+RUN yum install gcc python3-devel openssl-devel -y
 RUN curl -l https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_linux_amd64.zip --output /tmp/terraform_1.1.5_linux_amd64.zip && \
         cd /tmp && \
         unzip terraform_1.1.5_linux_amd64.zip && \
