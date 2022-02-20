@@ -21,6 +21,7 @@ throw it somewhere useful like .bashrc
 8. AWS CLI
 9. ZSH Oh-My-Zsh
 10. github CLI
+11. Flux V2 CLI
 
 
 ## To manage Ansible collections
