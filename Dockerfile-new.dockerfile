@@ -4,7 +4,7 @@ FROM ubuntu:focal
 RUN apt-get update -y
 RUN apt-get install git zsh iputils-ping nano curl unzip \ 
     gcc python3-dev python3-pip openssl \
-    vim locales -y
+    vim locales -y --fix-missing
 
 # Ansible
 COPY requirements.yml .
