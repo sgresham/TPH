@@ -3,8 +3,8 @@ FROM ubuntu:focal
 # APT initial
 RUN apt-get update -y
 RUN apt-get install git zsh iputils-ping nano curl unzip \ 
-    apt-get install gcc python3-dev python3-pip openssl \
-    apt-get install vim locales -y
+    gcc python3-dev python3-pip openssl \
+    vim locales -y
 
 # Ansible
 COPY requirements.yml .
