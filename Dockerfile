@@ -1,33 +1,69 @@
 FROM ubuntu:focal
 
-RUN apt-get update -y
+# APT initial
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install git zsh iputils-ping nano curl unzip \ 
+    gcc python3-dev python3-pip openssl \
+    vim locales -y
+
+# Ansible
+COPY requirements.yml .
 RUN apt-get install ansible -y
-RUN apt-get install git zsh iputils-ping nano curl unzip -y
-RUN apt-get install gcc python3-dev python3-pip openssl -y
+RUN ansible-galaxy collection install -r requirements.yml
+RUN ansible-galaxy role install -r requirements.yml
+# # Windows specific ansible addons
+RUN pip3 install pywinrm
+RUN pip3 install pywinrm[credssp]
+
+# Terraform
 RUN curl -l https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_linux_amd64.zip --output /tmp/terraform_1.1.5_linux_amd64.zip && \
         cd /tmp && \
         unzip terraform_1.1.5_linux_amd64.zip && \
         mv terraform /usr/local/sbin/terraform && \
         chmod +x /usr/local/sbin/terraform && \
         rm /tmp/terraform_1.1.5_linux_amd64.zip 
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
-RUN pip3 install pywinrm
-RUN pip3 install pywinrm[credssp]
-COPY requirements.yml .
-RUN ansible-galaxy collection install -r requirements.yml
-RUN ansible-galaxy role install -r requirements.yml
+
+# Kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+# Helm
 RUN curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+# google-cloud-sdk
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-sdk -y
+
+# linode-cli
 RUN pip3 install linode-cli --upgrade
+
+# Azure Cli
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+#AWS cli
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip" && \
+    cd /tmp && \
+    unzip awscliv2.zip && \
+     ./aws/install && \
+     rm /tmp/awscliv2.zip
+
+# Oh-my-zsh
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-RUN apt-get -y install locales
-RUN sed -i 's/plugins=(git)/plugins=(git kube-ps1)/' /root/.zshrc 
+
+# Oh-my-zsh customizations
+RUN sed -i 's/plugins=(git)/plugins=(git kube-ps1 kubectl)/' /root/.zshrc 
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     dpkg-reconfigure --frontend=noninteractive locales && \
     update-locale LANG=en_US.UTF-8
 ENV LANG en_US.UTF-8 
 RUN echo "PROMPT='\$(kube_ps1)'$PROMPT" >> /root/.zshrc
+RUN alias k="kubectl"
+
+# GitHub CLI
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
+    apt-get update -y && apt-get install gh -y
+
+#Clean up
 RUN apt-get clean 
 
+# Finish
 CMD [ "zsh" ]

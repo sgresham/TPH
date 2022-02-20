@@ -11,15 +11,17 @@ alias tph='docker run -it --rm -v $PWD:/data -v ~/.kube/config:/root/.kube/confi
 throw it somewhere useful like .bashrc
 
 ## Currently installed: - 
-1. Terraform 1.1.5
-2. Ansible
-3. Powershell PWSH
-4. Helm 3
-5. Azure CLI
-6. Google Cloud SDK
-7. ZSH Oh-my-zsh
-8. kube-ps1 (zsh prompt for showing instance)
-9. linode-cli
+1. Ansible
+2. Terraform 1.1.5
+3. Kubectl
+4. Helm
+5. Google Cloud SDK
+6. Linode CLI
+7. Azure CLI
+8. AWS CLI
+9. ZSH Oh-My-Zsh
+10. github CLI
+
 
 ## To manage Ansible collections
 1. requirements.yml before build to deploy roles and collections.

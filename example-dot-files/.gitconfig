@@ -1,6 +1,6 @@
 [user]
-	email = steve@gresham.id.au
-	name = Steve Gresham
+	email = user@userdns.com
+	name = First Last
 [init]
 	defaultBranch = main
 [core]
@@ -10,7 +10,7 @@
 [sendemail]
 	smtpencryption = tls
 	smtpserver = smtp.gmail.com
-	smtpuser = pavan.sss1991@gmail.com
+	smtpuser = user@userdns.com
 	smtppass = password
 	smtpserverport = 587
 [web]
@@ -58,7 +58,7 @@
 	plus-empty-line-marker-style = normal normal
 	line-numbers-right-format = "{np:^4}│ "
 [github]
-	user = pksunkara
+	user = username
 	token = token
 [gitflow "prefix"]
 	versiontag = v
