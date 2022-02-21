@@ -1,12 +1,12 @@
 # TerriblePowerHelm
 
 make sure docker is running. I have to run mine as local admin.
-docker build -t terriblepowerhelm:1.0.0 -t terriblepowerhelm:latest .
-docker container run -v \${pwd}:/data -it terriblepowerhelm:1.0.0 zsh
+docker build -t tph .
+docker container run -v \${pwd}:/data -it tph zsh
 
 I like to create an alias for this for quick use
 
-alias tph='docker run -it --rm -v $PWD:/data -v ~/.kube/config:/root/.kube/config tph zsh'
+alias tph='docker run -it --rm -v $PWD:/data -v ~/.kube/config:/root/.kube/config -v ~/.gitconfig:/root/.gitconfig tph zsh'
 
 throw it somewhere useful like .bashrc
 
@@ -22,7 +22,7 @@ throw it somewhere useful like .bashrc
 9. ZSH Oh-My-Zsh
 10. github CLI
 11. Flux V2 CLI
-
+12. Sealed Secrets client (kubeseal) 0.17.3
 
 ## To manage Ansible collections
 1. requirements.yml before build to deploy roles and collections.

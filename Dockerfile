@@ -68,5 +68,10 @@ RUN curl -sL https://fluxcd.io/install.sh | bash
 #Clean up
 RUN apt-get clean 
 
+# Sealed Secrets client (kubeseal)
+Run curl -sL https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.3/kubeseal-0.17.3-linux-amd64.tar.gz -o "/tmp/kubeseal.tar.gz" && \
+    cd /tmp && tar -xzvf kubeseal.tar.gz && mv kubeseal /usr/local/bin/ && rm -f kubeseal.tar.gz
+    
+
 # Finish
 CMD [ "zsh" ]
