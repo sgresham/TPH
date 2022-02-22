@@ -65,13 +65,20 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
 
 # Flux CLI
 RUN curl -sL https://fluxcd.io/install.sh | bash
-#Clean up
-RUN apt-get clean 
 
 # Sealed Secrets client (kubeseal)
-Run curl -sL https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.3/kubeseal-0.17.3-linux-amd64.tar.gz -o "/tmp/kubeseal.tar.gz" && \
+RUN curl -sL https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.3/kubeseal-0.17.3-linux-amd64.tar.gz -o "/tmp/kubeseal.tar.gz" && \
     cd /tmp && tar -xzvf kubeseal.tar.gz && mv kubeseal /usr/local/bin/ && rm -f kubeseal.tar.gz
     
+# Powershell 7
+RUN apt-get install -y wget apt-transport-https software-properties-common && \
+    curl -sL https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -o /tmp/powershell.deb && \
+    dpkg -i /tmp/powershell.deb && \
+    apt-get update && apt-get install powershell -y \
+    rm /tmp/powershell.deb
+
+#Clean up
+RUN apt-get clean 
 
 # Finish
 CMD [ "zsh" ]
