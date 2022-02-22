@@ -69,8 +69,9 @@ RUN curl -sL https://fluxcd.io/install.sh | bash
 # Sealed Secrets client (kubeseal)
 RUN curl -sL https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.3/kubeseal-0.17.3-linux-amd64.tar.gz -o "/tmp/kubeseal.tar.gz" && \
     cd /tmp && tar -xzvf kubeseal.tar.gz && mv kubeseal /usr/local/bin/ && rm -f kubeseal.tar.gz
-    
+
 # Powershell 7
+RUN DEBIAN_FRONTEND=noninteractive TZ=Australia/Sydney apt-get -y install tzdata
 RUN apt-get install -y wget apt-transport-https software-properties-common && \
     curl -sL https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -o /tmp/powershell.deb && \
     dpkg -i /tmp/powershell.deb && \
