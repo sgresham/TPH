@@ -15,14 +15,6 @@ RUN ansible-galaxy role install -r requirements.yml
 RUN pip3 install pywinrm
 RUN pip3 install pywinrm[credssp]
 
-# Terraform
-RUN curl -l https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_linux_amd64.zip --output /tmp/terraform_1.1.5_linux_amd64.zip && \
-        cd /tmp && \
-        unzip terraform_1.1.5_linux_amd64.zip && \
-        mv terraform /usr/local/sbin/terraform && \
-        chmod +x /usr/local/sbin/terraform && \
-        rm /tmp/terraform_1.1.5_linux_amd64.zip 
-
 # Kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
@@ -77,6 +69,18 @@ RUN apt-get install -y wget apt-transport-https software-properties-common && \
     dpkg -i /tmp/powershell.deb && \
     apt-get update && apt-get install powershell -y && \
     rm /tmp/powershell.deb
+
+# Hashicorp Vault
+RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+RUN apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+RUN apt-get update && apt-get install vault && setcap -r /usr/bin/vault
+
+# Terraform
+
+RUN apt-get update && apt-get install terraform
+
+#TMUX and Screen
+RUN apt-get install tmux screen -y
 
 #Clean up
 RUN apt-get clean 
