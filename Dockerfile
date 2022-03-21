@@ -1,10 +1,28 @@
 FROM ubuntu:focal
 
 # APT initial
+ARG DEBIAN_FRONTEND=noninteractive TZ=Australia/Sydney
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install git zsh iputils-ping nano curl unzip \ 
-    gcc python3-dev python3-pip openssl \
-    vim locales -y
+RUN apt-get install git zsh iputils-ping telnet curl wget unzip openssl \ 
+    vim nano \
+    gcc python3-dev python3-pip jq \
+    apt-transport-https software-properties-common \
+    vim locales tzdata dialog apt-utils -y
+
+#TMUX and Screen
+RUN apt-get install tmux screen -y
+
+# Locale stuff
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=en_US.UTF-8
+ENV LANG en_US.UTF-8 
+
+# Kubectl
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+# Helm
+RUN curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 # Ansible
 COPY requirements.yml .
@@ -15,11 +33,13 @@ RUN ansible-galaxy role install -r requirements.yml
 RUN pip3 install pywinrm
 RUN pip3 install pywinrm[credssp]
 
-# Kubectl
-RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+# Hashicorp Vault
+RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+RUN apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+RUN apt-get update && apt-get install vault && setcap -r /usr/bin/vault
 
-# Helm
-RUN curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+# Terraform
+RUN apt-get update && apt-get install terraform
 
 # google-cloud-sdk
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-sdk -y
@@ -37,19 +57,6 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/aws
      ./aws/install && \
      rm /tmp/awscliv2.zip
 
-# Oh-my-zsh
-RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-# Oh-my-zsh customizations
-RUN sed -i 's/plugins=(git)/plugins=(git kube-ps1 kubectl)/' /root/.zshrc 
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    dpkg-reconfigure --frontend=noninteractive locales && \
-    update-locale LANG=en_US.UTF-8
-ENV LANG en_US.UTF-8 
-RUN echo "PROMPT='\$(kube_ps1)'$PROMPT" >> /root/.zshrc
-RUN echo "command -v flux >/dev/null && . <(flux completion zsh)" >> /root/.zshrc
-RUN alias k="kubectl"
-
 # GitHub CLI
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
@@ -63,24 +70,20 @@ RUN curl -sL https://github.com/bitnami-labs/sealed-secrets/releases/download/v0
     cd /tmp && tar -xzvf kubeseal.tar.gz && mv kubeseal /usr/local/bin/ && rm -f kubeseal.tar.gz
 
 # Powershell 7
-RUN DEBIAN_FRONTEND=noninteractive TZ=Australia/Sydney apt-get -y install tzdata
-RUN apt-get install -y wget apt-transport-https software-properties-common && \
-    curl -sL https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -o /tmp/powershell.deb && \
+RUN curl -sL https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -o /tmp/powershell.deb && \
     dpkg -i /tmp/powershell.deb && \
     apt-get update && apt-get install powershell -y && \
     rm /tmp/powershell.deb
 
-# Hashicorp Vault
-RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
-RUN apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-RUN apt-get update && apt-get install vault && setcap -r /usr/bin/vault
+# Oh-my-zsh
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-# Terraform
+# Oh-my-zsh customizations
+RUN sed -i 's/plugins=(git)/plugins=(git kube-ps1 kubectl)/' /root/.zshrc 
 
-RUN apt-get update && apt-get install terraform
-
-#TMUX and Screen
-RUN apt-get install tmux screen -y
+RUN echo "PROMPT='\$(kube_ps1)'$PROMPT" >> /root/.zshrc
+RUN echo "command -v flux >/dev/null && . <(flux completion zsh)" >> /root/.zshrc
+RUN alias k="kubectl"
 
 #Clean up
 RUN apt-get clean 
