@@ -21,8 +21,22 @@ ENV LANG en_US.UTF-8
 # Kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
+# Krew
+RUN set -x; cd "$(mktemp -d)" && \
+  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew-linux_amd64.tar.gz" && \
+  tar zxvf krew-linux_amd64.tar.gz && \
+  KREW=./krew-"$(uname | tr '[:upper:]' '[:lower:]')_$(uname -m | sed -e 's/x86_64/amd64/' -e 's/arm.*$/arm/')" && \
+  "$KREW" install krew
+
+RUN export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 # Helm
 RUN curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+# K9sCli
+RUN set -x; cd "$(mktemp -d)" && \
+  curl -fsSLO "https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz" && \
+  tar zxvf k9s_Linux_x86_64.tar.gz k9s && \
+  mv k9s /bin/k9s
 
 # Ansible
 COPY requirements.yml .

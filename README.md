@@ -1,31 +1,45 @@
 # TerriblePowerHelm
 
 make sure docker is running. I have to run mine as local admin.
-docker build -t tph .
-docker container run -v \${pwd}:/data -it tph zsh
 
+### Build
+docker build -t tph:latest .
+
+### Run
+docker container run --rm -it tph zsh
+### with volume mount
+docker container run -v \${pwd}:/data --rm -it tph zsh
+
+### Aliases
 I like to create an alias for this for quick use
 
 alias tph='docker run -it --rm -v $PWD:/data -v ~/.kube/config:/root/.kube/config -v ~/.gitconfig:/root/.gitconfig tph zsh'
 
+### Aliases Port Forward
+If you are likely to port forward, consider adding some ports, please note that docker will not be happy if you try and spawn more than one of these.
+
+alias tph8080='docker run -it --rm -v $PWD:/data -v ~/.kube/config:/root/.kube/config -v ~/.gitconfig:/root/.gitconfig -p 8080:8080 tph sh -c "cd /data && zsh"'
+
 throw it somewhere useful like .bashrc
 
 ## Currently installed: - 
-1. Ansible
-2. Terraform 1.1.5
-3. Kubectl
-4. Helm
-5. Google Cloud SDK
-6. Linode CLI
-7. Azure CLI
-8. AWS CLI
-9. ZSH Oh-My-Zsh
-10. github CLI
-11. Flux V2 CLI
-12. Sealed Secrets client (kubeseal) 0.17.3
+Apt tools
+- git, zsh, iputils-ping, telnet, curl, wget, unzip, openssl
+- vim, nano
+- gcc, python3-dev python3-pip, jq
+- locales, tzdata, dialog
+- tmux, screen
 
-## To manage Ansible collections
-1. requirements.yml before build to deploy roles and collections.
+Kubernetes tools
+- kubectl + zsh autocomplete (see below for some aliases as well)
+- Krew
+- K9sCli
+- Helm 3
+- Flux V2
+- Sealed Secrets
+
+Ansible + plugins
+### Note - edit requirements.yml before build to deploy additional roles and collections.
 - collections:
   - community.general
   - azure.azcollection
@@ -39,22 +53,37 @@ throw it somewhere useful like .bashrc
   - geerlingguy.docker
   - geerlingguy.ntp
 
-## TODO
-1. AWS CLI
+Hashicorp
+- Terraform 
+- Vault
+
+ Google Cloud SDK
+ Linode CLI
+ Azure CLI
+ AWS CLI
+
+GitHub CLI
+
+# Kubernetes aliases (Thanks Oh-My-Zsh) Type 'alias to get the full list'
+k - kubectl
+kcuc - kubectl config use-context
+kcn - kubectl config set-context
+kl - kubectl logs
+
+
+
 
 # Examples
 
-using ansible docker image
+### Ansible
 
-docker run -it --rm --volume ${pwd}:/data terriblepowerhelm:latest sh -c "chmod -R 0600 /data && cd /data && ansible-playbook playbooks/linux/addkeytoUbuntu.yml --ask-pass"
+docker run -it --rm --volume ${pwd}:/data tph:latest sh -c "chmod -R 0600 /data && cd /data && ansible-playbook playbooks/linux/addkeytoUbuntu.yml --ask-pass"
 
-to test
-
-docker run --rm --volume ${pwd}:/data terriblepowerhelm:latest sh -c "chmod -R 0600 /data && cd /data && ansible ubuntu -m ping"
+docker run --rm --volume ${pwd}:/data tph:latest sh -c "chmod -R 0600 /data && cd /data && ansible ubuntu -m ping"
 
 example of running something
-docker run -it --rm --volume ${pwd}:/data terriblepowerhelm:latest sh -c "chmod 0600 /data && cd /data && ansible-playbook playbooks/docker/sonarqube-docker.yml"
+docker run -it --rm --volume ${pwd}:/data tph:latest sh -c "chmod 0600 /data && cd /data && ansible-playbook playbooks/docker/sonarqube-docker.yml"
 
 gloud login example
-gcloud auth activate-service-account ansible-service-account@left-central-311603.iam.gserviceaccount.com --key-file=google.json
+gcloud auth activate-service-account ansible-service-account@left-central-123456.iam.gserviceaccount.com --key-file=google.json
 
