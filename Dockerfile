@@ -6,7 +6,7 @@ RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install git zsh iputils-ping telnet curl wget unzip openssl \ 
     vim nano \
     gcc python3-dev python3-pip jq \
-    apt-transport-https software-properties-common \
+    apt-transport-https software-properties-common groff \
     vim locales tzdata dialog apt-utils -y
 
 #TMUX and Screen
@@ -17,6 +17,11 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     dpkg-reconfigure --frontend=noninteractive locales && \
     update-locale LANG=en_US.UTF-8
 ENV LANG en_US.UTF-8 
+
+# Talos cli - talosctl
+RUN curl https://github.com/siderolabs/talos/releases/download/v1.0.0/talosctl-linux-amd64 -L -o talosctl && \
+cp talosctl /usr/local/bin && \
+chmod +x /usr/local/bin/talosctl
 
 # Kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
