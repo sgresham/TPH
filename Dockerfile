@@ -2,7 +2,7 @@ FROM ubuntu:focal
 
 # APT initial
 ARG DEBIAN_FRONTEND=noninteractive TZ=Australia/Sydney
-RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get update -y && apt-get upgrade -y 
 RUN apt-get install git zsh iputils-ping telnet curl wget unzip openssl \ 
     vim nano \
     gcc python3-dev python3-pip jq \
