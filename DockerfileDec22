@@ -3,7 +3,7 @@ FROM ubuntu:focal
 # APT initial
 ARG DEBIAN_FRONTEND=noninteractive TZ=Australia/Sydney
 RUN apt-get update -y && apt-get upgrade -y 
-RUN apt-get install python3.9
+RUN apt-get install python3.9 -y
 RUN apt-get install git zsh iputils-ping telnet curl wget unzip openssl \ 
     vim nano \
     jq groff\
