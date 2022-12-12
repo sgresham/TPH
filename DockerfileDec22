@@ -10,3 +10,11 @@ RUN apt-get install git zsh iputils-ping telnet curl wget unzip openssl \
     apt-transport-https   \
     locales tzdata dialog apt-utils -y
 
+# Ansible
+COPY requirements.yml .
+RUN pip install ansible==7.1.0 --user
+RUN ansible-galaxy collection install -r requirements.yml
+RUN ansible-galaxy role install -r requirements.yml
+# # Windows specific ansible addons
+RUN pip3 install pywinrm
+RUN pip3 install pywinrm[credssp]
