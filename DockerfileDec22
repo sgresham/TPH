@@ -1,4 +1,4 @@
-FROM ubuntu:focal
+FROM ubuntu:jammy
 
 # APT initial
 ARG DEBIAN_FRONTEND=noninteractive TZ=Australia/Sydney
