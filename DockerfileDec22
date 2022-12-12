@@ -12,7 +12,7 @@ RUN apt-get install git zsh iputils-ping telnet curl wget unzip openssl \
 
 # Ansible
 COPY requirements.yml .
-RUN pip install ansible==7.1.0 --user
+RUN pip install ansible==7.1.0
 RUN ansible-galaxy install -r requirements.yml
 # # Windows specific ansible addons
 #RUN pip3 install pywinrm
