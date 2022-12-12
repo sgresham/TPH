@@ -1,12 +1,12 @@
-FROM ubuntu:jammy
+FROM python:3.9
 
 # APT initial
 ARG DEBIAN_FRONTEND=noninteractive TZ=Australia/Sydney
 RUN apt-get update -y && apt-get upgrade -y 
-RUN apt-get install python3.9 -y
+RUN apt-get install software-properties-common -y
 RUN apt-get install git zsh iputils-ping telnet curl wget unzip openssl \ 
     vim nano \
     jq groff\
-    apt-transport-https software-properties-common  \
+    apt-transport-https   \
     locales tzdata dialog apt-utils -y
 
