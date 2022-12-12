@@ -1,13 +1,14 @@
-FROM ubuntu:focal
+FROM python:3.9
 
 # APT initial
 ARG DEBIAN_FRONTEND=noninteractive TZ=Australia/Sydney
 RUN apt-get update -y && apt-get upgrade -y 
+RUN apt-get install software-properties-common -y
 RUN apt-get install git zsh iputils-ping telnet curl wget unzip openssl \ 
     vim nano \
-    gcc python3-dev python3-pip jq \
-    apt-transport-https software-properties-common groff \
-    vim locales tzdata dialog apt-utils -y
+    jq groff\
+    apt-transport-https   \
+    locales tzdata dialog apt-utils -y
 
 #TMUX and Screen
 RUN apt-get install tmux screen -y
@@ -45,12 +46,8 @@ RUN set -x; cd "$(mktemp -d)" && \
 
 # Ansible
 COPY requirements.yml .
-RUN apt-get install ansible -y
-RUN ansible-galaxy collection install -r requirements.yml
-RUN ansible-galaxy role install -r requirements.yml
-# # Windows specific ansible addons
-RUN pip3 install pywinrm
-RUN pip3 install pywinrm[credssp]
+RUN pip install ansible==7.1.0
+RUN ansible-galaxy install -r requirements.yml
 
 # Hashicorp Vault
 RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
