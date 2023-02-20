@@ -40,8 +40,8 @@ RUN curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 |
 
 # K9sCli
 RUN set -x; cd "$(mktemp -d)" && \
-  curl -fsSLO "https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_x86_64.tar.gz" && \
-  tar zxvf k9s_Linux_x86_64.tar.gz k9s && \
+  curl -fsSLO "https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_amd64.tar.gz" && \
+  tar zxvf k9s_Linux_amd64.tar.gz k9s && \
   mv k9s /bin/k9s
 
 # Ansible
