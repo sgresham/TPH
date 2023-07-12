@@ -47,6 +47,7 @@ RUN set -x; cd "$(mktemp -d)" && \
 # Ansible
 COPY requirements.yml .
 RUN pip install ansible==7.1.0
+RUN pip install netaddr
 RUN ansible-galaxy install -r requirements.yml
 
 # Hashicorp Vault
